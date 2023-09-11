@@ -1,0 +1,2 @@
+>> Success traj num: 98, fall num: 2 out of 100 trajs.
+>> Fall angle avg: 0.14960032192948255
