@@ -156,7 +156,7 @@ class GymEnv(Environment):
             if self.is_panda:
                 self._render_modes = self._env.metadata['render_modes']  # panda
             else:
-                self._render_modes = self._env.metadata['render_modes']  # original
+                self._render_modes = self._env.metadata['render.modes']  # original
 
         elif isinstance(env, gymnasium.Env):
             self._render_modes = self._env.metadata['render_modes']

@@ -32,7 +32,7 @@ policies = []
 algos = []
 trainers = []
 
-env = GymEnv(carEnv(demo=demo_pth), max_episode_length=1000)
+env = GymEnv(carEnv(demo=demo_pth), max_episode_length=1000, is_panda=False)
 
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
