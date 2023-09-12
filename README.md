@@ -24,10 +24,9 @@ If you are directly running python scripts, you will need to add the project roo
 export PYTHONPATH=\path\to\this\repo\src
 ```
 
-To use the Panda arm push domain, you need to install the panda-gym by following the [documentation](https://panda-gym.readthedocs.io/en/latest/).
-Then run the following commands:
+[//]: # (To use the Panda arm push domain, you need to install the panda-gym by following the [documentation]&#40;https://panda-gym.readthedocs.io/en/latest/&#41;.)
+To use the Panda arm push domain, you need to install the panda-gym first. Run the following commands:
 ```shell
-cd panda-gym
 pip install -e panda-gym
 ```
 
