@@ -95,7 +95,7 @@ seed = args.seed
 deterministic.set_seed(seed)
 
 # Create env for graph construction
-env = GymEnv(carEnv(demo=demo_pth), max_episode_length=1000)
+env = GymEnv(carEnv(demo=demo_pth), max_episode_length=1000, is_panda=False)
 
 # Config for tf.Session  &&  set GPU=0
 os.environ["CUDA_VISIBLE_DEVICES"] = ""

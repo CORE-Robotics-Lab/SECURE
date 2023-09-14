@@ -10,7 +10,7 @@ The code is tested with Python 3.7 with Anaconda.
 
 Required packages:
 ```bash
-pip install numpy joblib==0.11 tensorflow scipy path PyMC3 cached-property pyprind gym==0.14.0 matplotlib dowel akro ray psutil setproctitle cma Box2D
+pip install numpy joblib==0.11 tensorflow==2.9.0 scipy path PyMC3 cached-property pyprind gym==0.14.0 matplotlib dowel akro ray psutil setproctitle cma Box2D gymnasium==0.28.1 torch
 ```
   
 [//]: # (```bash)
@@ -19,10 +19,10 @@ pip install numpy joblib==0.11 tensorflow scipy path PyMC3 cached-property pypri
 
 [//]: # (```)
 
-`gym==0.14.0` and `tensorflow-probability==0.8.0` does not like each other, so we need to separately install `tensorflow-probability`: 
+`gym==0.14.0` and `tensorflow-probability==0.14.0` does not like each other, so we need to separately install `tensorflow-probability`: 
 
 ```bash
-pip install tensorflow-probability==0.8.0
+pip install tensorflow-probability==0.14.0
 ```
 
 If you are directly running python scripts, you will need to add the project root into your PYTHONPATH:
