@@ -1,7 +1,9 @@
 import sys
+
 sys.dont_write_bytecode = True
 import numpy as np
 import tensorflow.compat.v1 as tf
+
 tf.disable_v2_behavior()
 import models.vel_core as vel_core
 import models.config as config
@@ -11,6 +13,7 @@ import random
 from torch.utils.tensorboard import SummaryWriter
 
 np.set_printoptions(4)
+
 
 def count_accuracy(accuracy_lists):
     acc = np.array(accuracy_lists)
@@ -36,8 +39,8 @@ def generate_unsafe_states(S_s, A_s, num_ratio=0.1, num_unsafe_state_each_frame=
             s_agent = s_u[:-1, :]
             s_agent = s_agent[rand_idx, :]
             axis_range = \
-            np.random.choice([0.01, 0.03, 0.07, 0.1, 0.12, 0.14], 1, p=[0.2, 0.2, 0.2, 0.2, 0.1, 0.1])[
-                0] / np.sqrt(2)
+                np.random.choice([0.01, 0.03, 0.07, 0.1, 0.12, 0.14], 1, p=[0.2, 0.2, 0.2, 0.2, 0.1, 0.1])[
+                    0] / np.sqrt(2)
 
             x_direction, y_direction = 2 * random.random() - 1, 2 * random.random() - 1
             x_bias, y_bias = x_direction * axis_range, y_direction * axis_range
@@ -114,6 +117,7 @@ def build_optimizer(loss):
 
     return zero_ops, accumulate_ops, train_step_h, train_step_a
 
+
 def racecar_nn(input):
     """
     input: [sample_num, 26]
@@ -122,6 +126,7 @@ def racecar_nn(input):
     x = tf.expand_dims(s, 2) - tf.expand_dims(s, 1)  # [1000, 13, 13, 2]
     h = tf.compat.v1.map_fn(fn=lambda t: vel_core.network_cbf(x=t, r=config.DIST_MIN_THRES), elems=x)  # [1000, 13]
     return tf.compat.v1.reduce_min(tf.squeeze(h), axis=1)
+
 
 def build_training_graph_init(num_obs):
     """
@@ -136,8 +141,10 @@ def build_training_graph_init(num_obs):
     """
     # Placeholders
     s = tf.placeholder(tf.float32, [min(num_obs + 1, config.TOP_K + 1), 2], name='ph_state')  # state
-    dang_mask_reshape = tf.placeholder(tf.bool, [min(num_obs + 1, config.TOP_K + 1), ], name='ph_dang_mask')  # dang mask
-    safe_mask_reshape = tf.placeholder(tf.bool, [min(num_obs + 1, config.TOP_K + 1), ], name='ph_safe_mask')  # safe mask
+    dang_mask_reshape = tf.placeholder(tf.bool, [min(num_obs + 1, config.TOP_K + 1), ],
+                                       name='ph_dang_mask')  # dang mask
+    safe_mask_reshape = tf.placeholder(tf.bool, [min(num_obs + 1, config.TOP_K + 1), ],
+                                       name='ph_safe_mask')  # safe mask
 
     # x is difference between the state of each agent and other agents
     x = tf.expand_dims(s, 1) - tf.expand_dims(s, 0)  # shape: [13, 13, 2]
@@ -147,8 +154,8 @@ def build_training_graph_init(num_obs):
 
     # Get loss_safe and loss_dang and corresponding accuracy
     (loss_dang, loss_safe, acc_dang, acc_safe) = vel_core.loss_barrier(h=h,
-                                                                        dang_mask_reshape=dang_mask_reshape,
-                                                                        safe_mask_reshape=safe_mask_reshape)
+                                                                       dang_mask_reshape=dang_mask_reshape,
+                                                                       safe_mask_reshape=safe_mask_reshape)
 
     # Compute objective loss
     loss_list = [2 * loss_dang, loss_safe]
@@ -160,12 +167,12 @@ def build_training_graph_init(num_obs):
 
 
 def train_CBF_NN(demo_path,
-                      log_path,
-                      cbf_save_path,
-                      num_obs,
-                      is_load_unsafe_states=True,
-                      unsafe_ratio=1,
-                      unsafe_state_path='src/demonstrations/unsafe_states_16obs_vel.pkl'):
+                 log_path,
+                 cbf_save_path,
+                 num_obs,
+                 is_load_unsafe_states=True,
+                 unsafe_ratio=1,
+                 unsafe_state_path='src/demonstrations/unsafe_states_16obs_vel.pkl'):
     """
     Description:
         Train initial CBF NN
@@ -213,7 +220,6 @@ def train_CBF_NN(demo_path,
         with open(unsafe_state_path, 'wb') as f:
             pickle.dump([S_u, A_u], f)
 
-
     print(">> Ori total safe states num: ", len(S_s))
     print(">> Ori total unsafe states num: ", len(S_u))
     # Shuffle
@@ -242,7 +248,8 @@ def train_CBF_NN(demo_path,
     print("---------- Start Training ----------")
     with tf.Session() as sess:
         # Construct training graph
-        s, dang_mask_reshape, safe_mask_reshape, h, loss, loss_dang, loss_safe, acc_dang, acc_safe, loss_list, acc_list = build_training_graph_init(num_obs)
+        s, dang_mask_reshape, safe_mask_reshape, h, loss, loss_dang, loss_safe, acc_dang, acc_safe, loss_list, acc_list = build_training_graph_init(
+            num_obs)
         zero_ops, accumulate_ops, train_step_h, train_step_a = build_optimizer(loss)
         accumulate_ops.append(loss_list)
         accumulate_ops.append(acc_list)
@@ -260,7 +267,6 @@ def train_CBF_NN(demo_path,
         # Preparation
         loss_lists_np = []
         acc_lists_np = []
-
 
         for m in range(1 + (TOTAL_EPOCH_NUM // TRAIN_STEPS)):
             # Iterate training steps
@@ -294,9 +300,10 @@ def train_CBF_NN(demo_path,
                         dang_mask_reshape_[idx] = True
                         safe_mask_reshape_[idx] = False
 
-                    out, loss_, loss_dang_, loss_safe_, acc_dang_, acc_safe_ =\
+                    out, loss_, loss_dang_, loss_safe_, acc_dang_, acc_safe_ = \
                         sess.run([accumulate_ops, loss, loss_dang, loss_safe, acc_dang, acc_safe],
-                                 feed_dict={s: s_, dang_mask_reshape: dang_mask_reshape_, safe_mask_reshape: safe_mask_reshape_})
+                                 feed_dict={s: s_, dang_mask_reshape: dang_mask_reshape_,
+                                            safe_mask_reshape: safe_mask_reshape_})
 
                     # Original codebase way to add accuracy and loss
                     loss_list_np, acc_list_np = out[-2], out[-1]
@@ -312,7 +319,8 @@ def train_CBF_NN(demo_path,
                 EVAL_STEPS, EVAL_RATIO = 10, 0.5
                 if np.mod(log_istep, EVAL_STEPS) == 0:
                     s_u_eval, s_s_eval = \
-                        random.sample(S_u_eval, int(len(S_u_eval) * EVAL_RATIO)), random.sample(S_s_eval, int(len(S_s_eval) * EVAL_RATIO))
+                        random.sample(S_u_eval, int(len(S_u_eval) * EVAL_RATIO)), random.sample(S_s_eval, int(len(
+                            S_s_eval) * EVAL_RATIO))
                     eval_ls = s_u_eval + s_s_eval
                     random.shuffle(eval_ls)
                     acc_dang_ls, acc_safe_ls = [], []
@@ -328,7 +336,8 @@ def train_CBF_NN(demo_path,
                             safe_mask_reshape_[idx] = False
                         acc_dang_, acc_safe_ = \
                             sess.run([acc_dang, acc_safe],
-                                     feed_dict={s: s_, dang_mask_reshape: dang_mask_reshape_, safe_mask_reshape: safe_mask_reshape_})
+                                     feed_dict={s: s_, dang_mask_reshape: dang_mask_reshape_,
+                                                safe_mask_reshape: safe_mask_reshape_})
                         if acc_dang_ != -1:
                             acc_dang_ls.append(acc_dang_)
                         acc_safe_ls.append(acc_safe_)
@@ -349,7 +358,6 @@ def train_CBF_NN(demo_path,
         saver_cbf.save(sess, f"{cbf_path}/model")
 
 
-
 if __name__ == '__main__':
     # Set seed
     seed = 10
@@ -357,8 +365,8 @@ if __name__ == '__main__':
 
     # train CBF NN
     train_CBF_NN(demo_path="src/demonstrations/demos_demolition_derby.pkl",
-                          log_path="data/demolition_derby/cbf_model/log",
-                          cbf_save_path="data/demolition_derby/cbf_model/cbf",
-                          num_obs=16,
-                          is_load_unsafe_states=True,
-                          unsafe_state_path='src/states/states_demolition_derby.pkl')
+                 log_path="data/demolition_derby/cbf_model/log",
+                 cbf_save_path="data/demolition_derby/cbf_model/cbf",
+                 num_obs=16,
+                 is_load_unsafe_states=True,
+                 unsafe_state_path='src/states/states_demolition_derby.pkl')
