@@ -10,7 +10,7 @@ The code is tested with Python 3.7 with Anaconda.
 
 Required packages:
 ```bash
-pip install numpy joblib==0.11 tensorflow==2.9.0 scipy path PyMC3 cached-property pyprind gym==0.14.0 matplotlib dowel akro ray psutil setproctitle cma Box2D gymnasium==0.28.1 torch
+pip install numpy joblib==0.11 tensorflow==2.9.0 scipy path PyMC3 cached-property pyprind gym matplotlib dowel akro ray psutil setproctitle cma Box2D gymnasium==0.28.1 torch opencv-python
 ```
   
 [//]: # (```bash)
