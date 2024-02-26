@@ -4,6 +4,16 @@ Codebase for SECURE
 
 Implementations with Garage and Tensorflow.
 
+Please consider citing our work if you are using the codebase:
+```
+@inproceedings{secure_hri2024,
+  title={Enhancing Safety in Learning from Demonstration Algorithms via Control Barrier Function Shielding},
+  author={Yang*, Yue and Chen*, Letian and Zaidi*, Zulfiqar and van Waveren, Sanne and Krishna, Arjun and Gombolay, Matthew},
+  booktitle={Proceedings of International Conference on Human-Robot Interaction (HRI)},
+  year={2024}
+}
+```
+
 Setup: Dependencies and Environment Preparation
 ---
 The code is tested with Python 3.7 with Anaconda.
