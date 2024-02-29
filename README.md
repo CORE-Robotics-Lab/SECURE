@@ -14,6 +14,8 @@ Please consider citing our work if you are using the codebase:
 }
 ```
 
+The repo is currently open-sourced under the [CC-BY-NC](https://creativecommons.org/licenses/by-nc/4.0/) license. 
+
 Setup: Dependencies and Environment Preparation
 ---
 The code is tested with Python 3.7 with Anaconda.
